@@ -38,7 +38,7 @@ jobs:
           PORT="${DEPLOY_PORT:-22}"
           ssh-keyscan -p "$PORT" -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
 
-      - name: Upload index.html
+      - name: Upload site files
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
@@ -47,14 +47,30 @@ jobs:
         run: |
           USER="${DEPLOY_USER:-root}"
           PATH_DEST="${DEPLOY_PATH:-/var/www/djannasobol/index.html}"
+          DIR_DEST="${PATH_DEST%/*}"
           PORT="${DEPLOY_PORT:-22}"
+
+          ssh -i ~/.ssh/deploy_key -p "$PORT" -o StrictHostKeyChecking=accept-new \
+            "${USER}@${DEPLOY_HOST}" "mkdir -p '${DIR_DEST}/assets'"
+
           scp -i ~/.ssh/deploy_key -P "$PORT" -o StrictHostKeyChecking=accept-new \
             index.html "${USER}@${DEPLOY_HOST}:${PATH_DEST}"
+
+          scp -i ~/.ssh/deploy_key -P "$PORT" -o StrictHostKeyChecking=accept-new \
+            assets/hero-bali-desktop.mp4 \
+            assets/hero-bali-mobile.mp4 \
+            assets/hero-bali-poster.webp \
+            "${USER}@${DEPLOY_HOST}:${DIR_DEST}/assets/"
+
           ssh -i ~/.ssh/deploy_key -p "$PORT" -o StrictHostKeyChecking=accept-new \
-            "${USER}@${DEPLOY_HOST}" "chown www-data:www-data '${PATH_DEST}' 2>/dev/null || true; chmod 644 '${PATH_DEST}'"
+            "${USER}@${DEPLOY_HOST}" \
+            "chown -R www-data:www-data '${DIR_DEST}/assets' '${PATH_DEST}' 2>/dev/null || true; find '${DIR_DEST}/assets' -type f -exec chmod 644 {} \;; chmod 644 '${PATH_DEST}'"
 
       - name: Smoke check
         run: |
           sleep 2
           curl -fsSIL --max-time 20 https://djannasobol.com/ | head -n 15
           curl -fsS --max-time 20 https://djannasobol.com/ | head -n 8
+          curl -fsSIL --max-time 20 https://djannasobol.com/assets/hero-bali-mobile.mp4 | grep -qi "content-type: video/mp4"
+          curl -fsSIL --max-time 20 https://djannasobol.com/assets/hero-bali-desktop.mp4 | grep -qi "content-type: video/mp4"
+          curl -fsSIL --max-time 20 https://djannasobol.com/assets/hero-bali-poster.webp | grep -qi "content-type: image/webp"
