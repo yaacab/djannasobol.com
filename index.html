@@ -37,13 +37,14 @@
       html { scroll-behavior: auto; }
       .marquee-inner, .wave-anim, .palm-sway, .corner-breathe, .scroll-line, .city-pulse { animation: none !important; }
       #flight-svg { display: none !important; }
+      .site-bg-video { display: none !important; }
     }
     body {
       margin: 0;
       font-family: "Jost", system-ui, sans-serif;
       font-weight: 300;
       color: var(--sand);
-      background: var(--night);
+      background: #041417;
       overflow-x: hidden;
       position: relative;
     }
@@ -245,6 +246,50 @@
       to { opacity: 1; transform: translateY(0); }
     }
     /* Hero */
+    /* Site-wide Bali video background */
+    .site-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      background: #041417 url("assets/hero-bali-poster.webp") center center / cover no-repeat;
+    }
+    .site-bg-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center center;
+      opacity: 1;
+      filter: saturate(0.92) contrast(1.06) brightness(0.62);
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+    }
+    .site-bg-shade {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 120% 90% at 50% 40%, rgba(11, 58, 50, 0.28) 0%, rgba(6, 24, 33, 0.5) 45%, rgba(4, 20, 23, 0.68) 100%),
+        linear-gradient(180deg, rgba(2, 15, 19, 0.35), rgba(3, 24, 27, 0.55));
+    }
+    @media (max-width: 767px) {
+      .site-bg-video {
+        object-position: center 42%;
+        filter: saturate(0.9) contrast(1.06) brightness(0.58);
+      }
+      .site-bg-shade {
+        background:
+          radial-gradient(ellipse 120% 90% at 50% 45%, rgba(11, 58, 50, 0.35) 0%, rgba(6, 24, 33, 0.58) 50%, rgba(4, 20, 23, 0.75) 100%),
+          linear-gradient(180deg, rgba(2, 15, 19, 0.4), rgba(3, 24, 27, 0.62));
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .site-bg-video { display: none; }
+    }
     .hero {
       position: relative;
       min-height: 100vh;
@@ -254,34 +299,10 @@
       align-items: center;
       justify-content: center;
       padding: 6rem 1.25rem 8rem;
-      background: #041417 url("assets/hero-bali-poster.webp") center center / cover no-repeat;
+      background: transparent;
       overflow: hidden;
       z-index: 2;
       isolation: isolate;
-    }
-    .hero-bg-video {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      width: 100%;
-      height: 100%;
-      display: block;
-      object-fit: cover;
-      object-position: center center;
-      opacity: 1;
-      filter: saturate(0.9) contrast(1.05) brightness(0.72);
-      pointer-events: none;
-      transform: translateZ(0);
-      -webkit-transform: translateZ(0);
-    }
-    .hero-bg-shade {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      background:
-        radial-gradient(ellipse 120% 80% at 50% 60%, rgba(11, 58, 50, 0.35) 0%, rgba(6, 24, 33, 0.55) 48%, rgba(4, 20, 23, 0.72) 100%),
-        linear-gradient(180deg, rgba(2, 15, 19, 0.25), rgba(3, 24, 27, 0.55));
     }
     .hero .orb-l,
     .hero .orb-r,
@@ -290,20 +311,6 @@
     .palm-hero-right,
     #particle-canvas {
       z-index: 3;
-    }
-    @media (max-width: 767px) {
-      .hero-bg-video {
-        object-position: center 42%;
-        filter: saturate(0.88) contrast(1.06) brightness(0.68);
-      }
-      .hero-bg-shade {
-        background:
-          radial-gradient(ellipse 120% 80% at 50% 55%, rgba(11, 58, 50, 0.4) 0%, rgba(6, 24, 33, 0.62) 50%, rgba(4, 20, 23, 0.78) 100%),
-          linear-gradient(180deg, rgba(2, 15, 19, 0.3), rgba(3, 24, 27, 0.6));
-      }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .hero-bg-video { display: none; }
     }
     .hero .orb-l {
       position: absolute;
@@ -636,7 +643,7 @@
     #player {
       position: relative;
       padding: 5rem 1.5rem;
-      background: var(--night);
+      background: rgba(6, 24, 33, 0.45);
       background-image: repeating-linear-gradient(-45deg, transparent, transparent 14px, rgba(255,255,255,0.015) 14px, rgba(255,255,255,0.015) 15px);
       z-index: 2;
     }
@@ -820,7 +827,7 @@
     /* Video */
     #video {
       padding: 5rem 1.5rem;
-      background: linear-gradient(180deg, var(--night) 0%, var(--jungle) 100%);
+      background: linear-gradient(180deg, rgba(6, 24, 33, 0.4) 0%, rgba(11, 58, 50, 0.45) 100%);
       position: relative;
       z-index: 2;
     }
@@ -947,29 +954,43 @@
       background: rgba(200, 169, 110, 0.1);
       border-color: rgba(200, 169, 110, 0.6);
     }
-    /* Flight path overlay (above palms, below story text) */
+    /* Flight path: plane + dashed trail above sections, below nav */
     #flight-svg {
       position: fixed;
       inset: 0;
       width: 100%;
       height: 100%;
       pointer-events: none;
-      z-index: 5;
+      z-index: 40;
       overflow: visible;
       display: none;
     }
     @media (min-width: 768px) {
       #flight-svg { display: block; }
     }
+    #flight-path-ghost {
+      opacity: 0.22;
+    }
+    #flight-path {
+      opacity: 0.95;
+      filter: drop-shadow(0 0 6px rgba(244, 199, 123, 0.55));
+    }
+    #flight-plane {
+      filter: drop-shadow(0 0 10px rgba(244, 199, 123, 0.85)) drop-shadow(0 0 22px rgba(244, 199, 123, 0.35));
+      transition: opacity 0.25s ease;
+    }
     .city-label {
       font-family: "Jost", sans-serif;
-      font-weight: 200;
-      font-size: 0.6rem;
-      fill: #c8a96e;
+      font-weight: 300;
+      font-size: 0.72rem;
+      fill: #f4c77b;
       letter-spacing: 0.3em;
       text-transform: uppercase;
       opacity: 0;
       transition: opacity 0.6s ease;
+      paint-order: stroke;
+      stroke: rgba(4, 20, 23, 0.65);
+      stroke-width: 3px;
     }
     .city-label.visible { opacity: 1; }
     @keyframes cityPulse {
@@ -983,8 +1004,8 @@
     /* Story */
     #story {
       position: relative;
-      background: var(--jungle);
-      z-index: 6;
+      background: rgba(11, 58, 50, 0.42);
+      z-index: 2;
     }
     .story-glow-line {
       position: absolute;
@@ -1121,7 +1142,7 @@
     #contact {
       position: relative;
       padding: clamp(4rem, 12vw, 8rem) 1.5rem;
-      background: radial-gradient(ellipse 80% 60% at 50% 40%, #1a2e1a 0%, var(--night) 70%);
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(26, 46, 26, 0.5) 0%, rgba(6, 24, 33, 0.55) 70%);
       text-align: center;
       z-index: 2;
     }
@@ -1354,12 +1375,12 @@
       color: var(--cream);
       text-shadow: 0 2px 18px rgba(0, 0, 0, 0.48);
     }
-    .marquee-wrap { background: #0a403d; }
+    .marquee-wrap { background: rgba(10, 64, 61, 0.55); }
     .marquee-inner { color: rgba(255, 241, 212, 0.22); }
     #player {
       background:
         repeating-linear-gradient(-45deg, transparent, transparent 14px, rgba(255,255,255,0.025) 14px, rgba(255,255,255,0.025) 15px),
-        linear-gradient(145deg, #061821 0%, #0a2d38 48%, #0b3a32 100%);
+        linear-gradient(145deg, rgba(6, 24, 33, 0.5) 0%, rgba(10, 45, 56, 0.48) 48%, rgba(11, 58, 50, 0.5) 100%);
     }
     .sec-tag {
       color: var(--mist);
@@ -1394,24 +1415,21 @@
     }
     #video {
       background:
-        radial-gradient(circle at 85% 15%, rgba(244, 143, 112, 0.15), transparent 32%),
-        linear-gradient(180deg, #0b3a32 0%, #07475e 100%);
+        radial-gradient(circle at 85% 15%, rgba(244, 143, 112, 0.12), transparent 32%),
+        linear-gradient(180deg, rgba(11, 58, 50, 0.45) 0%, rgba(7, 71, 94, 0.48) 100%);
     }
-    #story { background: #0b3a32; }
+    #story { background: rgba(11, 58, 50, 0.38); }
     .ch-body { color: rgba(255, 241, 212, 0.86); }
     #contact {
-      background: radial-gradient(ellipse 80% 65% at 50% 35%, #115b51 0%, #061821 72%);
+      background: radial-gradient(ellipse 80% 65% at 50% 35%, rgba(17, 91, 81, 0.5) 0%, rgba(6, 24, 33, 0.55) 72%);
     }
-    footer { background: #041219; }
+    footer { background: rgba(4, 18, 25, 0.72); }
     #cursor-dot,
     #cursor-ring { display: none !important; }
 
     /* Canva concept 01 · production luxury Bali redesign */
     body {
-      background:
-        radial-gradient(circle at 82% 8%, rgba(208, 126, 94, 0.08), transparent 28rem),
-        radial-gradient(circle at 8% 28%, rgba(25, 117, 105, 0.12), transparent 32rem),
-        #041417;
+      background: transparent;
     }
     body::after { opacity: 0.022; }
     .nav {
@@ -1479,8 +1497,10 @@
     .btn-h.b { background: rgba(6, 29, 33, 0.38); }
     .marquee-wrap {
       padding: 0.9rem 0;
-      background: #082c2e;
+      background: rgba(8, 44, 46, 0.55);
       border-color: rgba(216, 188, 131, 0.14);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
     .marquee-inner { font-size: 1.45rem; color: rgba(247, 238, 223, 0.18); }
     #player,
@@ -1492,7 +1512,7 @@
       background:
         linear-gradient(135deg, rgba(255,255,255,0.018) 25%, transparent 25%) 0 0 / 42px 42px,
         radial-gradient(circle at 82% 12%, rgba(216, 188, 131, 0.09), transparent 28rem),
-        linear-gradient(155deg, #061b20, #083234 52%, #04171b);
+        linear-gradient(155deg, rgba(6, 27, 32, 0.48), rgba(8, 50, 52, 0.45) 52%, rgba(4, 23, 27, 0.5));
     }
     .sec-tag { letter-spacing: 0.62em; }
     .sec-title-lg {
@@ -1657,8 +1677,8 @@
     #video {
       padding: clamp(5rem, 9vw, 8rem) clamp(1.25rem, 5vw, 5rem);
       background:
-        radial-gradient(circle at 12% 18%, rgba(217, 135, 111, 0.12), transparent 26rem),
-        linear-gradient(155deg, #0a3b3a, #06252c 56%, #04171b);
+        radial-gradient(circle at 12% 18%, rgba(217, 135, 111, 0.1), transparent 26rem),
+        linear-gradient(155deg, rgba(10, 59, 58, 0.45), rgba(6, 37, 44, 0.48) 56%, rgba(4, 23, 27, 0.52));
     }
     .video-grid { gap: 2rem; }
     .video-box {
@@ -1670,7 +1690,7 @@
     #story {
       background:
         radial-gradient(circle at 80% 56%, rgba(216, 188, 131, 0.08), transparent 28rem),
-        #06221f;
+        rgba(6, 34, 31, 0.35);
     }
     .chapter { padding-left: 5vw; padding-right: 5vw; }
     .chapter-inner {
@@ -1694,8 +1714,8 @@
     }
     #contact {
       background:
-        radial-gradient(circle at 50% 16%, rgba(216, 188, 131, 0.15), transparent 32rem),
-        linear-gradient(160deg, #0b4a42, #061d24 68%, #031116);
+        radial-gradient(circle at 50% 16%, rgba(216, 188, 131, 0.12), transparent 32rem),
+        linear-gradient(160deg, rgba(11, 74, 66, 0.48), rgba(6, 29, 36, 0.5) 68%, rgba(3, 17, 22, 0.55));
     }
     .contact-cta {
       border-radius: 999px;
@@ -1942,26 +1962,54 @@
   <div id="cursor-dot" aria-hidden="true"></div>
   <div id="cursor-ring" aria-hidden="true"></div>
 
+  <div class="site-bg" aria-hidden="true">
+    <video
+      class="site-bg-video"
+      id="site-bg-video"
+      muted
+      loop
+      autoplay
+      playsinline
+      webkit-playsinline
+      preload="metadata"
+      poster="assets/hero-bali-poster.webp"
+      tabindex="-1"
+    >
+      <source id="site-bg-source" src="assets/hero-bali-desktop.mp4" type="video/mp4" />
+    </video>
+    <div class="site-bg-shade"></div>
+  </div>
+
   <svg id="flight-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="none">
-    <path id="flight-path" fill="none" stroke="#c8a96e" stroke-width="1.5" stroke-dasharray="6 8" stroke-linecap="round" opacity="0.4" />
+    <defs>
+      <mask id="flight-mask">
+        <path id="flight-mask-path" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" />
+      </mask>
+    </defs>
+    <path id="flight-path-ghost" fill="none" stroke="#f4c77b" stroke-width="1.5" stroke-dasharray="4 10" stroke-linecap="round" />
+    <path id="flight-path" fill="none" stroke="#f4c77b" stroke-width="2.4" stroke-dasharray="10 12" stroke-linecap="round" mask="url(#flight-mask)" />
     <g id="city-a" class="city-marker">
-      <circle class="city-pulse-ring" r="14" fill="none" stroke="rgba(200,169,110,0.3)" stroke-width="1" />
-      <circle r="6" fill="#c8a96e" />
-      <text class="city-label" id="label-moscow" data-i18n="flight_moscow" text-anchor="middle" dy="28">москва</text>
+      <circle class="city-pulse-ring" r="18" fill="none" stroke="rgba(244,199,123,0.45)" stroke-width="1.5" />
+      <circle r="7" fill="#f4c77b" />
+      <text class="city-label" id="label-moscow" data-i18n="flight_moscow" text-anchor="middle" dy="30">москва</text>
     </g>
     <g id="city-b" class="city-marker">
-      <circle class="city-pulse-ring" r="14" fill="none" stroke="rgba(200,169,110,0.3)" stroke-width="1" />
-      <circle r="6" fill="#c8a96e" />
-      <text class="city-label" id="label-world" data-i18n="flight_world" text-anchor="middle" dy="28">мир · дубай</text>
+      <circle class="city-pulse-ring" r="18" fill="none" stroke="rgba(244,199,123,0.45)" stroke-width="1.5" />
+      <circle r="7" fill="#f4c77b" />
+      <text class="city-label" id="label-world" data-i18n="flight_world" text-anchor="middle" dy="30">мир · дубай</text>
     </g>
     <g id="city-c" class="city-marker">
-      <circle class="city-pulse-ring" r="14" fill="none" stroke="rgba(200,169,110,0.3)" stroke-width="1" />
-      <circle r="6" fill="#c8a96e" />
-      <text class="city-label" id="label-bali" data-i18n="flight_bali" text-anchor="middle" dy="28">бали</text>
+      <circle class="city-pulse-ring" r="18" fill="none" stroke="rgba(244,199,123,0.45)" stroke-width="1.5" />
+      <circle r="7" fill="#f4c77b" />
+      <text class="city-label" id="label-bali" data-i18n="flight_bali" text-anchor="middle" dy="30">бали</text>
     </g>
-    <g id="flight-plane" style="filter: drop-shadow(0 0 8px rgba(200,169,110,0.6))">
-      <g transform="translate(-12,-12)">
-        <path fill="#c8a96e" d="M12 2 L22 12 L12 22 L10 14 L2 12 L10 10 Z" />
+    <g id="flight-plane">
+      <!-- nose points +X; JS rotates along path -->
+      <g transform="translate(-18,-10) scale(1.15)">
+        <path fill="#fff1d4" d="M30 10 L2 4 L6 10 L2 16 Z"/>
+        <path fill="#f4c77b" d="M28 10 L4 6.5 L7 10 L4 13.5 Z"/>
+        <path fill="#e5c98d" d="M16 10 L10 2 L12.5 10 L10 18 Z"/>
+        <path fill="#d4b896" d="M8 10 L4 7.5 L5.2 10 L4 12.5 Z"/>
       </g>
     </g>
   </svg>
@@ -2016,22 +2064,6 @@
   </div>
 
   <section class="hero" id="top">
-    <video
-      class="hero-bg-video"
-      id="hero-bg-video"
-      muted
-      loop
-      autoplay
-      playsinline
-      webkit-playsinline
-      preload="metadata"
-      poster="assets/hero-bali-poster.webp"
-      tabindex="-1"
-      aria-hidden="true"
-    >
-      <source id="hero-bg-source" src="assets/hero-bali-desktop.mp4" type="video/mp4" />
-    </video>
-    <div class="hero-bg-shade" aria-hidden="true"></div>
     <div class="orb-l" aria-hidden="true"></div>
     <div class="orb-r" aria-hidden="true"></div>
     <div class="horizon-glow" aria-hidden="true"></div>
@@ -2236,7 +2268,7 @@
     </div>
   </section>
 
-  <div class="wave-divider" style="background:var(--jungle);">
+  <div class="wave-divider" style="background:rgba(11,58,50,0.35);">
     <svg viewBox="0 0 1200 80" preserveAspectRatio="none"><path fill="#0f1e14" d="M0,35 Q250,60 500,35 T1000,35 T1200,40 L1200,80 L0,80 Z"/></svg>
   </div>
 
@@ -2251,7 +2283,7 @@
         <p class="ch-body" data-i18n="ch1_body">Москва дала ей всё — первые вертушки, первые клубы, первую любовь к электронному звуку. Каждый сет в ночных клубах был исповедью. Город научил её слушать людей через музыку — и отвечать им тем же.</p>
       </div>
     </div>
-    <div class="wave-divider-sm" style="background:var(--jungle);">
+    <div class="wave-divider-sm" style="background:rgba(11,58,50,0.35);">
       <svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path fill="rgba(200,169,110,0.06)" d="M0,20 Q300,5 600,20 T1200,20 L1200,40 L0,40 Z"/></svg>
     </div>
     <div class="chapter right" id="story-ch2">
@@ -2263,7 +2295,7 @@
         <p class="ch-body" data-i18n="ch2_body">Берлин, Барселона, Тбилиси, Дубай — каждый город приносил новые ритмы, новые оттенки. Техно сменялось афро-хаусом, минимал растворялся в мелодике. Но одно не менялось никогда — ощущение что ты внутри чего-то живого.</p>
       </div>
     </div>
-    <div class="wave-divider-sm" style="background:var(--jungle);">
+    <div class="wave-divider-sm" style="background:rgba(11,58,50,0.35);">
       <svg viewBox="0 0 1200 40" preserveAspectRatio="none"><path fill="rgba(200,169,110,0.06)" d="M0,15 Q400,30 800,15 T1200,18 L1200,40 L0,40 Z"/></svg>
     </div>
     <div class="chapter left" id="story-ch3">
@@ -2452,33 +2484,33 @@
 
       var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       var mobile = window.matchMedia("(max-width: 767px)").matches;
-      var heroBgVideo = document.getElementById("hero-bg-video");
-      var heroBgSource = document.getElementById("hero-bg-source");
+      var siteBgVideo = document.getElementById("site-bg-video");
+      var siteBgSource = document.getElementById("site-bg-source");
       var saveData = !!(navigator.connection && navigator.connection.saveData);
-      if (heroBgVideo) {
+      if (siteBgVideo) {
         if (reduce || saveData) {
-          heroBgVideo.pause();
-          heroBgVideo.removeAttribute("autoplay");
-          heroBgVideo.removeAttribute("src");
-          if (heroBgSource) heroBgSource.removeAttribute("src");
+          siteBgVideo.pause();
+          siteBgVideo.removeAttribute("autoplay");
+          siteBgVideo.removeAttribute("src");
+          if (siteBgSource) siteBgSource.removeAttribute("src");
         } else {
           var pick = window.matchMedia("(max-width: 767px)").matches
             ? "assets/hero-bali-mobile.mp4"
             : "assets/hero-bali-desktop.mp4";
-          if (heroBgSource) {
-            if (heroBgSource.getAttribute("src") !== pick) {
-              heroBgSource.setAttribute("src", pick);
-              heroBgVideo.load();
+          if (siteBgSource) {
+            if (siteBgSource.getAttribute("src") !== pick) {
+              siteBgSource.setAttribute("src", pick);
+              siteBgVideo.load();
             }
           } else {
-            heroBgVideo.setAttribute("src", pick);
+            siteBgVideo.setAttribute("src", pick);
           }
           var tryPlay = function () {
-            var heroPlay = heroBgVideo.play();
-            if (heroPlay && typeof heroPlay.catch === "function") heroPlay.catch(function () {});
+            var sitePlay = siteBgVideo.play();
+            if (sitePlay && typeof sitePlay.catch === "function") sitePlay.catch(function () {});
           };
-          if (heroBgVideo.readyState >= 2) tryPlay();
-          else heroBgVideo.addEventListener("canplay", tryPlay, { once: true });
+          if (siteBgVideo.readyState >= 2) tryPlay();
+          else siteBgVideo.addEventListener("canplay", tryPlay, { once: true });
           tryPlay();
         }
       }
@@ -2838,9 +2870,11 @@
       window.addEventListener("scroll", setActiveNav, { passive: true });
       setActiveNav();
 
-      /* Flight path (story journey) */
+      /* Flight path: plane leaves dashed trail while scrolling story */
       var flightSvg = document.getElementById("flight-svg");
       var flightPath = document.getElementById("flight-path");
+      var flightPathGhost = document.getElementById("flight-path-ghost");
+      var flightMaskPath = document.getElementById("flight-mask-path");
       var flightPlane = document.getElementById("flight-plane");
       var cityA = document.getElementById("city-a");
       var cityB = document.getElementById("city-b");
@@ -2852,7 +2886,7 @@
       var flightLen = 0;
 
       function canFlight() {
-        return !!(flightSvg && flightPath && flightPlane && !reduce && window.matchMedia("(min-width: 768px)").matches);
+        return !!(flightSvg && flightPath && flightMaskPath && flightPlane && !reduce && window.matchMedia("(min-width: 768px)").matches);
       }
 
       function flightAnchors() {
@@ -2864,15 +2898,15 @@
         var r2 = ch2.getBoundingClientRect();
         var r3 = ch3.getBoundingClientRect();
         return {
-          A: { x: r1.left + r1.width * 0.15, y: r1.top + r1.height * 0.45 },
-          B: { x: r2.right - r2.width * 0.15, y: r2.top + r2.height * 0.45 },
-          C: { x: r3.left + r3.width * 0.15, y: r3.top + r3.height * 0.45 }
+          A: { x: r1.left + r1.width * 0.18, y: r1.top + r1.height * 0.42 },
+          B: { x: r2.right - r2.width * 0.18, y: r2.top + r2.height * 0.42 },
+          C: { x: r3.left + r3.width * 0.18, y: r3.top + r3.height * 0.42 }
         };
       }
 
       function buildBezierPath(A, B, C) {
         var lift = function (y1, y2) {
-          return Math.min(140, Math.abs(y2 - y1) * 0.35 + 70);
+          return Math.min(160, Math.abs(y2 - y1) * 0.4 + 80);
         };
         var cp1x = A.x + (B.x - A.x) * 0.35;
         var cp1y = A.y - lift(A.y, B.y);
@@ -2883,34 +2917,9 @@
         var cp4x = C.x - (C.x - B.x) * 0.35;
         var cp4y = C.y - lift(B.y, C.y);
         return (
-          "M " +
-          A.x +
-          " " +
-          A.y +
-          " C " +
-          cp1x +
-          " " +
-          cp1y +
-          " " +
-          cp2x +
-          " " +
-          cp2y +
-          " " +
-          B.x +
-          " " +
-          B.y +
-          " C " +
-          cp3x +
-          " " +
-          cp3y +
-          " " +
-          cp4x +
-          " " +
-          cp4y +
-          " " +
-          C.x +
-          " " +
-          C.y
+          "M " + A.x + " " + A.y +
+          " C " + cp1x + " " + cp1y + " " + cp2x + " " + cp2y + " " + B.x + " " + B.y +
+          " C " + cp3x + " " + cp3y + " " + cp4x + " " + cp4y + " " + C.x + " " + C.y
         );
       }
 
@@ -2923,9 +2932,11 @@
         flightSvg.setAttribute("height", h);
         var pts = flightAnchors();
         if (!pts) return;
-        flightPath.setAttribute("d", buildBezierPath(pts.A, pts.B, pts.C));
+        var d = buildBezierPath(pts.A, pts.B, pts.C);
+        flightPath.setAttribute("d", d);
+        if (flightPathGhost) flightPathGhost.setAttribute("d", d);
+        flightMaskPath.setAttribute("d", d);
         flightLen = flightPath.getTotalLength();
-        flightPath.style.strokeDasharray = "6 8";
         cityA.setAttribute("transform", "translate(" + pts.A.x + "," + pts.A.y + ")");
         cityB.setAttribute("transform", "translate(" + pts.B.x + "," + pts.B.y + ")");
         cityC.setAttribute("transform", "translate(" + pts.C.x + "," + pts.C.y + ")");
@@ -2936,10 +2947,13 @@
         var p = Math.max(0, Math.min(1, progress));
         var len = p * flightLen;
         var pt = flightPath.getPointAtLength(len);
-        var pt2 = flightPath.getPointAtLength(Math.min(len + Math.max(2, flightLen * 0.004), flightLen));
+        var pt2 = flightPath.getPointAtLength(Math.min(len + Math.max(3, flightLen * 0.006), flightLen));
         var angle = (Math.atan2(pt2.y - pt.y, pt2.x - pt.x) * 180) / Math.PI;
-        flightPlane.setAttribute("transform", "translate(" + pt.x + "," + pt.y + ") rotate(" + angle + ") translate(-12,-12)");
-        flightPlane.style.opacity = p < 0.005 ? "0" : "1";
+        flightPlane.setAttribute("transform", "translate(" + pt.x + "," + pt.y + ") rotate(" + angle + ")");
+        flightPlane.style.opacity = p < 0.01 ? "0" : "1";
+        // Reveal dashed trail behind the plane via mask stroke draw
+        flightMaskPath.style.strokeDasharray = String(flightLen);
+        flightMaskPath.style.strokeDashoffset = String(Math.max(0, flightLen - len));
       }
 
       function updateFlightScroll() {
@@ -2950,16 +2964,13 @@
         var storyTop = storyEl.offsetTop;
         var storyHeight = storyEl.offsetHeight;
         var scrollY = window.scrollY || window.pageYOffset;
-        var progress = (scrollY - storyTop + window.innerHeight * 0.3) / Math.max(1, storyHeight);
+        var progress = (scrollY - storyTop + window.innerHeight * 0.35) / Math.max(1, storyHeight * 0.92);
         progress = Math.max(0, Math.min(1, progress));
         lastFlightProgress = progress;
-        if (flightLen) {
-          flightPath.style.strokeDashoffset = String(flightLen * (1 - progress));
-          updateFlightPlane(progress);
-        }
+        if (flightLen) updateFlightPlane(progress);
         if (labelMoscow) labelMoscow.classList.toggle("visible", progress > 0.02);
-        if (labelWorld) labelWorld.classList.toggle("visible", progress > 0.48);
-        if (labelBali) labelBali.classList.toggle("visible", progress > 0.92);
+        if (labelWorld) labelWorld.classList.toggle("visible", progress > 0.45);
+        if (labelBali) labelBali.classList.toggle("visible", progress > 0.88);
       }
 
       window.addEventListener("resize", function () {
