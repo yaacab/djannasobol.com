@@ -1,0 +1,60 @@
+# Auto-deploy static site to VPS when main changes.
+# Required GitHub secrets:
+#   DEPLOY_HOST   — e.g. 193.29.224.1
+#   DEPLOY_USER   — e.g. root
+#   DEPLOY_SSH_KEY — private SSH key with access to the host
+# Optional:
+#   DEPLOY_PATH   — default /var/www/djannasobol/index.html
+#   DEPLOY_PORT   — default 22
+
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+        run: |
+          test -n "$DEPLOY_SSH_KEY" || { echo "Missing secret DEPLOY_SSH_KEY"; exit 1; }
+          test -n "$DEPLOY_HOST" || { echo "Missing secret DEPLOY_HOST"; exit 1; }
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          PORT="${DEPLOY_PORT:-22}"
+          ssh-keyscan -p "$PORT" -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Upload index.html
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
+        run: |
+          USER="${DEPLOY_USER:-root}"
+          PATH_DEST="${DEPLOY_PATH:-/var/www/djannasobol/index.html}"
+          PORT="${DEPLOY_PORT:-22}"
+          scp -i ~/.ssh/deploy_key -P "$PORT" -o StrictHostKeyChecking=accept-new \
+            index.html "${USER}@${DEPLOY_HOST}:${PATH_DEST}"
+          ssh -i ~/.ssh/deploy_key -p "$PORT" -o StrictHostKeyChecking=accept-new \
+            "${USER}@${DEPLOY_HOST}" "chown www-data:www-data '${PATH_DEST}' 2>/dev/null || true; chmod 644 '${PATH_DEST}'"
+
+      - name: Smoke check
+        run: |
+          sleep 2
+          curl -fsSIL --max-time 20 https://djannasobol.com/ | head -n 15
+          curl -fsS --max-time 20 https://djannasobol.com/ | head -n 8
