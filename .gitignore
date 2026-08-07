@@ -1,0 +1,8 @@
+.DS_Store
+.env
+.env.*
+*.pem
+cursor_key
+*credentials*
+.idea/
+.vscode/
