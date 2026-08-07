@@ -1301,9 +1301,58 @@
     footer { background: #041219; }
     #cursor-dot,
     #cursor-ring { display: none !important; }
+
+    /* Mobile scroll footsteps */
+    #footstep-trail {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0;
+      display: none;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 3;
+    }
+    .scroll-footstep {
+      position: absolute;
+      width: 25px;
+      height: 42px;
+      color: var(--gold);
+      opacity: 0;
+      transform: translate3d(0, 15px, 0) rotate(var(--step-rotation)) scale(0.55);
+      transform-origin: center;
+      filter: drop-shadow(0 0 7px rgba(244, 199, 123, 0.24));
+      transition:
+        opacity 0.42s ease,
+        transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform;
+    }
+    .scroll-footstep.visible {
+      opacity: 0.42;
+      transform: translate3d(0, 0, 0) rotate(var(--step-rotation)) scale(1);
+    }
+    .scroll-footstep svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    .scroll-footstep.right svg { transform: scaleX(-1); }
+    @media (max-width: 767px) {
+      #footstep-trail { display: block; }
+    }
+    @media (prefers-reduced-motion: reduce) and (max-width: 767px) {
+      .scroll-footstep {
+        opacity: 0.16;
+        transform: rotate(var(--step-rotation)) scale(1);
+        transition: none;
+      }
+    }
   </style>
 </head>
 <body>
+  <div id="footstep-trail" aria-hidden="true"></div>
   <div id="scroll-progress" aria-hidden="true"></div>
   <div id="cursor-dot" aria-hidden="true"></div>
   <div id="cursor-ring" aria-hidden="true"></div>
@@ -1964,6 +2013,80 @@
       } else {
         rev.forEach(function (el) { el.classList.add("visible"); });
       }
+
+      /* Mobile zigzag footsteps, revealed progressively by scroll */
+      var footTrail = document.getElementById("footstep-trail");
+      var footObserver = null;
+      var footResizeTimer = 0;
+
+      function buildFootTrail() {
+        if (!footTrail) return;
+        if (!window.matchMedia("(max-width: 767px)").matches) {
+          footTrail.innerHTML = "";
+          footTrail.style.height = "0px";
+          return;
+        }
+
+        if (footObserver) footObserver.disconnect();
+        footTrail.innerHTML = "";
+
+        var docHeight = Math.max(
+          document.body.scrollHeight,
+          document.documentElement.scrollHeight
+        );
+        footTrail.style.height = docHeight + "px";
+
+        var startY = Math.max(650, Math.round(window.innerHeight * 0.82));
+        var endY = Math.max(startY, docHeight - 300);
+        var stepGap = 185;
+        var xPath = [5, 89, 8, 86];
+        var fragment = document.createDocumentFragment();
+        var steps = [];
+
+        for (var y = startY, i = 0; y < endY; y += stepGap, i++) {
+          var side = i % 2 === 0 ? "left" : "right";
+          var foot = document.createElement("span");
+          foot.className = "scroll-footstep " + side;
+          foot.style.top = y + "px";
+          foot.style.left = xPath[i % xPath.length] + "%";
+          foot.style.setProperty("--step-rotation", (side === "left" ? -20 : 20) + "deg");
+          foot.innerHTML =
+            '<svg viewBox="0 0 28 46" aria-hidden="true">' +
+              '<ellipse cx="13" cy="31" rx="5.1" ry="9.1" fill="currentColor"/>' +
+              '<ellipse cx="13.4" cy="20.5" rx="7.1" ry="10.1" fill="currentColor"/>' +
+              '<circle cx="7.1" cy="9.2" r="2.55" fill="currentColor"/>' +
+              '<circle cx="12" cy="6.2" r="2.7" fill="currentColor"/>' +
+              '<circle cx="17" cy="6.8" r="2.35" fill="currentColor"/>' +
+              '<circle cx="21.1" cy="9.8" r="1.85" fill="currentColor"/>' +
+            '</svg>';
+          fragment.appendChild(foot);
+          steps.push(foot);
+        }
+
+        footTrail.appendChild(fragment);
+
+        if (reduce || !("IntersectionObserver" in window)) {
+          steps.forEach(function (foot) { foot.classList.add("visible"); });
+          return;
+        }
+
+        footObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add("visible");
+            footObserver.unobserve(entry.target);
+          });
+        }, { threshold: 0.01, rootMargin: "0px 0px -14% 0px" });
+
+        steps.forEach(function (foot) { footObserver.observe(foot); });
+      }
+
+      buildFootTrail();
+      window.addEventListener("load", buildFootTrail, { once: true });
+      window.addEventListener("resize", function () {
+        clearTimeout(footResizeTimer);
+        footResizeTimer = setTimeout(buildFootTrail, 180);
+      });
 
       /* Stats countUp */
       var statsDone = false;
