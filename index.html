@@ -976,8 +976,13 @@
       filter: drop-shadow(0 0 6px rgba(244, 199, 123, 0.55));
     }
     #flight-plane {
-      filter: drop-shadow(0 0 10px rgba(244, 199, 123, 0.85)) drop-shadow(0 0 22px rgba(244, 199, 123, 0.35));
-      transition: opacity 0.25s ease;
+      filter: drop-shadow(0 0 12px rgba(244, 199, 123, 0.9)) drop-shadow(0 0 28px rgba(244, 199, 123, 0.4));
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+    #flight-plane image {
+      transform-box: fill-box;
+      transform-origin: center;
     }
     .city-label {
       font-family: "Jost", sans-serif;
@@ -1020,9 +1025,9 @@
     }
     .chapter {
       position: relative;
-      min-height: 100vh;
-      min-height: 100dvh;
-      padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 8vw, 12vw);
+      min-height: 52vh;
+      min-height: 52dvh;
+      padding: clamp(2.2rem, 4.5vw, 3.8rem) clamp(1.5rem, 8vw, 12vw);
       overflow: hidden;
     }
     .chapter.left { padding-left: clamp(1.5rem, 12vw, 18vw); text-align: left; }
@@ -1085,8 +1090,8 @@
       pointer-events: none;
       z-index: 1;
     }
-    .wave-divider-sm { height: 40px; overflow: hidden; }
-    .wave-divider-sm svg { display: block; width: 100%; height: 40px; }
+    .wave-divider-sm { height: 18px; overflow: hidden; opacity: 0.7; }
+    .wave-divider-sm svg { display: block; width: 100%; height: 18px; }
     /* Stats */
     #stats {
       padding: 4rem 1.5rem;
@@ -1980,7 +1985,7 @@
     <div class="site-bg-shade"></div>
   </div>
 
-  <svg id="flight-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="none">
+  <svg id="flight-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" preserveAspectRatio="none">
     <defs>
       <mask id="flight-mask">
         <path id="flight-mask-path" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" />
@@ -2004,13 +2009,16 @@
       <text class="city-label" id="label-bali" data-i18n="flight_bali" text-anchor="middle" dy="30">бали</text>
     </g>
     <g id="flight-plane">
-      <!-- nose points +X; JS rotates along path -->
-      <g transform="translate(-18,-10) scale(1.15)">
-        <path fill="#fff1d4" d="M30 10 L2 4 L6 10 L2 16 Z"/>
-        <path fill="#f4c77b" d="M28 10 L4 6.5 L7 10 L4 13.5 Z"/>
-        <path fill="#e5c98d" d="M16 10 L10 2 L12.5 10 L10 18 Z"/>
-        <path fill="#d4b896" d="M8 10 L4 7.5 L5.2 10 L4 12.5 Z"/>
-      </g>
+      <!-- nose points +X; asset is pre-oriented -->
+      <image
+        href="assets/flight-plane.png"
+        xlink:href="assets/flight-plane.png"
+        x="-28"
+        y="-26"
+        width="56"
+        height="52"
+        preserveAspectRatio="xMidYMid meet"
+      />
     </g>
   </svg>
 
@@ -2882,8 +2890,15 @@
       var labelMoscow = document.getElementById("label-moscow");
       var labelWorld = document.getElementById("label-world");
       var labelBali = document.getElementById("label-bali");
-      var lastFlightProgress = 0;
       var flightLen = 0;
+      var flightGeomDirty = true;
+      var flightTarget = 0;
+      var flightSmooth = 0;
+      var flightAngleSmooth = 0;
+      var flightRaf = 0;
+      var flightHasAngle = false;
+      var FLIGHT_LERP = 0.14;
+      var FLIGHT_ANGLE_LERP = 0.18;
 
       function canFlight() {
         return !!(flightSvg && flightPath && flightMaskPath && flightPlane && !reduce && window.matchMedia("(min-width: 768px)").matches);
@@ -2898,23 +2913,23 @@
         var r2 = ch2.getBoundingClientRect();
         var r3 = ch3.getBoundingClientRect();
         return {
-          A: { x: r1.left + r1.width * 0.18, y: r1.top + r1.height * 0.42 },
-          B: { x: r2.right - r2.width * 0.18, y: r2.top + r2.height * 0.42 },
-          C: { x: r3.left + r3.width * 0.18, y: r3.top + r3.height * 0.42 }
+          A: { x: r1.left + r1.width * 0.2, y: r1.top + r1.height * 0.48 },
+          B: { x: r2.right - r2.width * 0.2, y: r2.top + r2.height * 0.48 },
+          C: { x: r3.left + r3.width * 0.2, y: r3.top + r3.height * 0.48 }
         };
       }
 
       function buildBezierPath(A, B, C) {
         var lift = function (y1, y2) {
-          return Math.min(160, Math.abs(y2 - y1) * 0.4 + 80);
+          return Math.min(70, Math.abs(y2 - y1) * 0.28 + 36);
         };
-        var cp1x = A.x + (B.x - A.x) * 0.35;
+        var cp1x = A.x + (B.x - A.x) * 0.32;
         var cp1y = A.y - lift(A.y, B.y);
-        var cp2x = B.x - (B.x - A.x) * 0.35;
+        var cp2x = B.x - (B.x - A.x) * 0.32;
         var cp2y = B.y - lift(A.y, B.y);
-        var cp3x = B.x + (C.x - B.x) * 0.35;
+        var cp3x = B.x + (C.x - B.x) * 0.32;
         var cp3y = B.y - lift(B.y, C.y);
-        var cp4x = C.x - (C.x - B.x) * 0.35;
+        var cp4x = C.x - (C.x - B.x) * 0.32;
         var cp4y = C.y - lift(B.y, C.y);
         return (
           "M " + A.x + " " + A.y +
@@ -2936,48 +2951,90 @@
         flightPath.setAttribute("d", d);
         if (flightPathGhost) flightPathGhost.setAttribute("d", d);
         flightMaskPath.setAttribute("d", d);
-        flightLen = flightPath.getTotalLength();
+        flightLen = flightPath.getTotalLength() || 0;
         cityA.setAttribute("transform", "translate(" + pts.A.x + "," + pts.A.y + ")");
         cityB.setAttribute("transform", "translate(" + pts.B.x + "," + pts.B.y + ")");
         cityC.setAttribute("transform", "translate(" + pts.C.x + "," + pts.C.y + ")");
+        flightGeomDirty = false;
       }
 
-      function updateFlightPlane(progress) {
+      function shortestAngleDelta(from, to) {
+        var d = ((to - from + 540) % 360) - 180;
+        return d;
+      }
+
+      function paintFlight(progress) {
         if (!canFlight() || !flightLen) return;
         var p = Math.max(0, Math.min(1, progress));
         var len = p * flightLen;
+        var look = Math.max(8, flightLen * 0.012);
         var pt = flightPath.getPointAtLength(len);
-        var pt2 = flightPath.getPointAtLength(Math.min(len + Math.max(3, flightLen * 0.006), flightLen));
+        var pt2 = flightPath.getPointAtLength(Math.min(len + look, flightLen));
         var angle = (Math.atan2(pt2.y - pt.y, pt2.x - pt.x) * 180) / Math.PI;
-        flightPlane.setAttribute("transform", "translate(" + pt.x + "," + pt.y + ") rotate(" + angle + ")");
-        flightPlane.style.opacity = p < 0.01 ? "0" : "1";
-        // Reveal dashed trail behind the plane via mask stroke draw
+        if (!flightHasAngle) {
+          flightAngleSmooth = angle;
+          flightHasAngle = true;
+        } else {
+          flightAngleSmooth += shortestAngleDelta(flightAngleSmooth, angle) * FLIGHT_ANGLE_LERP;
+        }
+        flightPlane.setAttribute(
+          "transform",
+          "translate(" + pt.x.toFixed(2) + "," + pt.y.toFixed(2) + ") rotate(" + flightAngleSmooth.toFixed(2) + ")"
+        );
+        flightPlane.style.opacity = p < 0.008 ? "0" : "1";
         flightMaskPath.style.strokeDasharray = String(flightLen);
         flightMaskPath.style.strokeDashoffset = String(Math.max(0, flightLen - len));
+        if (labelMoscow) labelMoscow.classList.toggle("visible", p > 0.02);
+        if (labelWorld) labelWorld.classList.toggle("visible", p > 0.42);
+        if (labelBali) labelBali.classList.toggle("visible", p > 0.86);
       }
 
-      function updateFlightScroll() {
-        if (!canFlight()) return;
-        refreshFlightGeometry();
+      function computeFlightTarget() {
         var storyEl = document.getElementById("story");
-        if (!storyEl) return;
+        if (!storyEl) return 0;
         var storyTop = storyEl.offsetTop;
         var storyHeight = storyEl.offsetHeight;
         var scrollY = window.scrollY || window.pageYOffset;
-        var progress = (scrollY - storyTop + window.innerHeight * 0.35) / Math.max(1, storyHeight * 0.92);
-        progress = Math.max(0, Math.min(1, progress));
-        lastFlightProgress = progress;
-        if (flightLen) updateFlightPlane(progress);
-        if (labelMoscow) labelMoscow.classList.toggle("visible", progress > 0.02);
-        if (labelWorld) labelWorld.classList.toggle("visible", progress > 0.45);
-        if (labelBali) labelBali.classList.toggle("visible", progress > 0.88);
+        var progress = (scrollY - storyTop + window.innerHeight * 0.4) / Math.max(1, storyHeight * 0.85);
+        return Math.max(0, Math.min(1, progress));
+      }
+
+      function tickFlight() {
+        flightRaf = 0;
+        if (!canFlight()) return;
+        if (flightGeomDirty) refreshFlightGeometry();
+        var diff = flightTarget - flightSmooth;
+        if (Math.abs(diff) > 0.0002) {
+          flightSmooth += diff * FLIGHT_LERP;
+          paintFlight(flightSmooth);
+          flightRaf = requestAnimationFrame(tickFlight);
+        } else {
+          flightSmooth = flightTarget;
+          paintFlight(flightSmooth);
+        }
+      }
+
+      function requestFlightTick() {
+        if (!flightRaf) flightRaf = requestAnimationFrame(tickFlight);
+      }
+
+      function updateFlightScroll() {
+        if (!canFlight()) {
+          if (flightPlane) flightPlane.style.opacity = "0";
+          return;
+        }
+        flightTarget = computeFlightTarget();
+        requestFlightTick();
       }
 
       window.addEventListener("resize", function () {
+        flightGeomDirty = true;
+        flightHasAngle = false;
         updateFlightScroll();
       });
       window.addEventListener("scroll", updateFlightScroll, { passive: true });
       function initFlight() {
+        flightGeomDirty = true;
         updateFlightScroll();
       }
       if (document.readyState === "loading") {
