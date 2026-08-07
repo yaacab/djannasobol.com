@@ -1302,52 +1302,382 @@
     #cursor-dot,
     #cursor-ring { display: none !important; }
 
-    /* Mobile scroll footsteps */
-    #footstep-trail {
+    /* Canva concept 01 · production luxury Bali redesign */
+    body {
+      background:
+        radial-gradient(circle at 82% 8%, rgba(208, 126, 94, 0.08), transparent 28rem),
+        radial-gradient(circle at 8% 28%, rgba(25, 117, 105, 0.12), transparent 32rem),
+        #041417;
+    }
+    body::after { opacity: 0.022; }
+    .nav {
+      min-height: 76px;
+      padding: 0 3vw;
+      background: rgba(4, 20, 24, 0.82);
+      border-bottom: 1px solid rgba(216, 188, 131, 0.22);
+      box-shadow: 0 10px 40px rgba(0, 8, 12, 0.2);
+    }
+    .nav::after {
+      content: "";
       position: absolute;
-      top: 0;
       left: 0;
+      bottom: -1px;
+      width: min(180px, 22vw);
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), rgba(121, 201, 164, 0.8), transparent);
+    }
+    .nav-logo {
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .nav-links { gap: clamp(1rem, 2.2vw, 2.2rem); }
+    .nav-links a { font-size: 0.6rem; letter-spacing: 0.3em; }
+    .hero {
+      min-height: 100svh;
+      background:
+        radial-gradient(circle at 76% 16%, rgba(217, 135, 111, 0.24), transparent 28%),
+        radial-gradient(circle at 18% 66%, rgba(22, 118, 106, 0.28), transparent 36%),
+        linear-gradient(145deg, #04171c 0%, #0b4547 47%, #123a32 100%);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(2, 12, 17, 0.12), transparent 24%, transparent 72%, rgba(2, 12, 17, 0.58)),
+        radial-gradient(ellipse at 50% 48%, transparent 45%, rgba(1, 12, 16, 0.28) 100%);
+    }
+    #particle-canvas { display: none; }
+    .hero-inner { width: min(960px, 92vw); }
+    .title-wrap { width: min(430px, 74vw); }
+    .hero-emblem {
+      filter:
+        drop-shadow(0 28px 44px rgba(0, 10, 16, 0.42))
+        drop-shadow(0 0 30px rgba(247, 238, 223, 0.12));
+    }
+    .eyebrow-hero { letter-spacing: 0.7em; }
+    .tagline-hero { font-size: clamp(1.05rem, 2.4vw, 1.55rem); }
+    .btn-h {
+      border-radius: 999px;
+      padding: 1rem 2.4rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .btn-h.a {
+      color: #071a1e;
+      background: linear-gradient(135deg, #f3d598, #d8bc83);
+      border-color: transparent;
+      box-shadow: 0 14px 36px rgba(216, 188, 131, 0.2);
+    }
+    .btn-h.b { background: rgba(6, 29, 33, 0.38); }
+    .marquee-wrap {
+      padding: 0.9rem 0;
+      background: #082c2e;
+      border-color: rgba(216, 188, 131, 0.14);
+    }
+    .marquee-inner { font-size: 1.45rem; color: rgba(247, 238, 223, 0.18); }
+    #player,
+    #video,
+    #story,
+    #contact { isolation: isolate; }
+    #player {
+      padding: clamp(5rem, 9vw, 8rem) clamp(1.25rem, 5vw, 5rem);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.018) 25%, transparent 25%) 0 0 / 42px 42px,
+        radial-gradient(circle at 82% 12%, rgba(216, 188, 131, 0.09), transparent 28rem),
+        linear-gradient(155deg, #061b20, #083234 52%, #04171b);
+    }
+    .sec-tag { letter-spacing: 0.62em; }
+    .sec-title-lg {
+      font-style: normal;
+      font-weight: 400;
+      letter-spacing: -0.045em;
+      line-height: 0.92;
+    }
+    .sec-rule { width: 90px; margin-bottom: 3.2rem; }
+    .mixes-signature {
+      max-width: 1120px;
+      padding: clamp(3rem, 7vw, 5.6rem) 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 34px;
+      background:
+        radial-gradient(circle at 50% 115%, rgba(216, 188, 131, 0.19), transparent 46%),
+        linear-gradient(145deg, rgba(13, 78, 71, 0.64), rgba(4, 26, 31, 0.82));
+      border-color: rgba(216, 188, 131, 0.38);
+      box-shadow: 0 30px 90px rgba(0, 9, 14, 0.28), inset 0 1px 0 rgba(255,255,255,0.04);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+    }
+    .mixes-name { font-size: clamp(2.7rem, 7vw, 6rem); letter-spacing: 0.02em; }
+    .track-grid { max-width: 1120px; gap: 1.5rem; }
+    .track-card {
+      padding: clamp(1.5rem, 3vw, 2.4rem);
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(216, 188, 131, 0.12), transparent 35%),
+        linear-gradient(145deg, rgba(14, 68, 64, 0.68), rgba(4, 25, 31, 0.76));
+      border: 1px solid rgba(216, 188, 131, 0.32);
+      box-shadow: 0 24px 70px rgba(0, 9, 14, 0.24), inset 0 1px 0 rgba(255,255,255,0.035);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .track-card::before {
+      width: 64px;
+      height: 64px;
+      border-radius: 0 28px 0 0;
+    }
+    .track-num { top: 0.8rem; right: 1.4rem; opacity: 0.14; }
+    .track-genre { letter-spacing: 0.5em; }
+    .track-name { font-size: clamp(2rem, 3vw, 2.7rem); }
+    .track-embed {
+      position: relative;
+      margin-top: 1.4rem;
+      border: 0;
+      border-radius: 20px;
+      overflow: visible;
+      background: transparent;
+    }
+    .sc-engine {
+      position: absolute !important;
+      left: -9999px !important;
+      width: 1px !important;
+      height: 1px !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    .custom-sc-player {
+      position: relative;
+      padding: 1.25rem;
+      border-radius: 20px;
+      color: var(--cream);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018));
+      border: 1px solid rgba(247, 238, 223, 0.12);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    .custom-player-top {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 0.9rem;
+    }
+    .custom-play {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      color: #082024;
+      background: linear-gradient(135deg, #f2d294, #d8bc83);
+      box-shadow: 0 10px 24px rgba(216, 188, 131, 0.2);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .custom-player-copy small {
+      display: block;
+      margin-bottom: 0.28rem;
+      font: 400 0.52rem/1 "Jost", sans-serif;
+      letter-spacing: 0.28em;
+      color: var(--mist);
+    }
+    .custom-player-copy strong {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font: 500 1.15rem/1.1 "Cormorant Garamond", serif;
+      color: var(--cream);
+    }
+    .custom-sc-link {
+      color: var(--gold);
+      text-decoration: none;
+      font: 400 0.6rem/1 "Jost", sans-serif;
+      letter-spacing: 0.14em;
+    }
+    .custom-wave {
+      height: 46px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin: 1.05rem 0 0.8rem;
+      overflow: hidden;
+      opacity: 0.72;
+    }
+    .custom-wave span {
+      flex: 1;
+      min-width: 2px;
+      height: var(--wave-height);
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--gold), rgba(121, 201, 164, 0.55));
+      transform-origin: center;
+    }
+    .custom-progress {
+      position: relative;
       width: 100%;
-      height: 0;
+      height: 18px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+    .custom-progress::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 8px;
+      height: 2px;
+      background: rgba(247, 238, 223, 0.16);
+    }
+    .custom-progress-fill {
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 0%;
+      height: 2px;
+      background: var(--gold);
+      box-shadow: 0 0 10px rgba(216, 188, 131, 0.45);
+    }
+    .custom-player-time {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.1rem;
+      color: rgba(185, 222, 216, 0.76);
+      font: 300 0.6rem/1 "Jost", sans-serif;
+      letter-spacing: 0.08em;
+    }
+    #video {
+      padding: clamp(5rem, 9vw, 8rem) clamp(1.25rem, 5vw, 5rem);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(217, 135, 111, 0.12), transparent 26rem),
+        linear-gradient(155deg, #0a3b3a, #06252c 56%, #04171b);
+    }
+    .video-grid { gap: 2rem; }
+    .video-box {
+      border-radius: 26px;
+      border-color: rgba(216, 188, 131, 0.28);
+      box-shadow: 0 30px 90px rgba(0, 8, 13, 0.36);
+    }
+    .video-name { margin-top: 1.2rem; font-size: 1.55rem; }
+    #story {
+      background:
+        radial-gradient(circle at 80% 56%, rgba(216, 188, 131, 0.08), transparent 28rem),
+        #06221f;
+    }
+    .chapter { padding-left: 5vw; padding-right: 5vw; }
+    .chapter-inner {
+      width: min(620px, 100%);
+      max-width: 620px;
+      padding: clamp(1.7rem, 4vw, 3rem);
+      border-radius: 30px;
+      background: linear-gradient(145deg, rgba(12, 61, 57, 0.62), rgba(3, 23, 28, 0.54));
+      border: 1px solid rgba(216, 188, 131, 0.18);
+      box-shadow: 0 24px 80px rgba(0, 8, 12, 0.2);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .ch-city { color: #e5c98d; }
+    .ch-body { font-size: clamp(0.98rem, 1.6vw, 1.12rem); line-height: 1.85; }
+    .stats-grid { max-width: 1120px; margin-inline: auto; }
+    .stat {
+      background: rgba(7, 39, 39, 0.55);
+      border: 1px solid rgba(216, 188, 131, 0.12);
+      border-radius: 22px;
+    }
+    #contact {
+      background:
+        radial-gradient(circle at 50% 16%, rgba(216, 188, 131, 0.15), transparent 32rem),
+        linear-gradient(160deg, #0b4a42, #061d24 68%, #031116);
+    }
+    .contact-cta {
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(216,188,131,0.22), rgba(216,188,131,0.08));
+    }
+    .soc-card {
+      border-radius: 24px;
+      background: rgba(7, 36, 39, 0.56);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    footer { border-top-color: rgba(216, 188, 131, 0.14); }
+
+    /* Short-lived footsteps: toes point down and only recent steps remain */
+    #footstep-trail {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100svh;
       display: none;
       overflow: hidden;
       pointer-events: none;
-      z-index: 3;
+      z-index: 80;
     }
     .scroll-footstep {
       position: absolute;
-      width: 25px;
-      height: 42px;
+      width: 23px;
+      height: 39px;
       color: var(--gold);
       opacity: 0;
-      transform: translate3d(0, 15px, 0) rotate(var(--step-rotation)) scale(0.55);
+      transform: translate3d(0, -12px, 0) rotate(var(--step-rotation)) scale(0.58);
       transform-origin: center;
-      filter: drop-shadow(0 0 7px rgba(244, 199, 123, 0.24));
+      filter: drop-shadow(0 0 7px rgba(216, 188, 131, 0.28));
       transition:
-        opacity 0.42s ease,
-        transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+        opacity 0.38s ease,
+        transform 0.46s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: opacity, transform;
     }
     .scroll-footstep.visible {
-      opacity: 0.42;
+      opacity: 0.38;
       transform: translate3d(0, 0, 0) rotate(var(--step-rotation)) scale(1);
     }
-    .scroll-footstep svg {
-      display: block;
-      width: 100%;
-      height: 100%;
-      overflow: visible;
+    .scroll-footstep.fading {
+      opacity: 0;
+      transform: translate3d(0, 11px, 0) rotate(var(--step-rotation)) scale(0.82);
     }
+    .scroll-footstep svg { display: block; width: 100%; height: 100%; overflow: visible; }
     .scroll-footstep.right svg { transform: scaleX(-1); }
     @media (max-width: 767px) {
       #footstep-trail { display: block; }
+      .nav { min-height: 70px; padding: 0 1.1rem; }
+      .nav-logo { font-size: 0.92rem; }
+      .nav-cluster { gap: 0.75rem; }
+      .lang-btn { padding: 0.46rem 0.48rem; }
+      .hero { padding: 6rem 1rem 7rem; }
+      .title-wrap { width: min(290px, 76vw); }
+      .eyebrow-hero { font-size: 0.58rem; letter-spacing: 0.52em; }
+      .tagline-hero { max-width: 28ch; margin-inline: auto; }
+      .hero-btns { gap: 0.75rem; }
+      .btn-h { width: min(100%, 260px); text-align: center; }
+      .eq-wrap { width: min(330px, 90vw); }
+      .wave-divider { height: 48px; }
+      #player, #video { padding: 4.5rem 1.1rem; }
+      .sec-title-lg { font-size: clamp(3.5rem, 18vw, 5rem); }
+      .mixes-signature { border-radius: 26px; padding: 3rem 1rem; }
+      .mixes-signature::before, .mixes-signature::after { width: 40px; }
+      .mixes-name { font-size: clamp(2.55rem, 13vw, 4.2rem); line-height: 0.88; }
+      .mixes-sub { font-size: 1rem; }
+      .track-grid { gap: 1.1rem; }
+      .track-card { border-radius: 24px; padding: 1.4rem; }
+      .custom-sc-player { padding: 1rem; }
+      .custom-player-top { grid-template-columns: 44px minmax(0,1fr) auto; gap: 0.7rem; }
+      .custom-play { width: 44px; height: 44px; }
+      .custom-wave { height: 40px; gap: 2px; }
+      .chapter { min-height: auto; padding: 4.5rem 1.1rem; }
+      .chapter-inner { border-radius: 24px; padding: 1.55rem; }
+      .chapter.left, .chapter.right { text-align: left; }
+      .chapter.right .chapter-inner, .chapter.left .chapter-inner { margin-inline: auto; }
+      .wm { font-size: 7rem; }
+      .stats-grid { gap: 0.75rem; padding-inline: 1.1rem; }
+      .stat { border-radius: 18px; }
+      .social-row { gap: 0.8rem; }
+      .soc-card { border-radius: 20px; }
     }
-    @media (prefers-reduced-motion: reduce) and (max-width: 767px) {
-      .scroll-footstep {
-        opacity: 0.16;
-        transform: rotate(var(--step-rotation)) scale(1);
-        transition: none;
-      }
+    @media (prefers-reduced-motion: reduce) {
+      #footstep-trail { display: none !important; }
     }
   </style>
 </head>
@@ -1536,11 +1866,28 @@
         <h3 class="track-name">Confession</h3>
         <p class="track-meta" data-i18n="track_meta_1">Anna Sobol · SoundCloud</p>
         <div class="track-embed">
-          <iframe
-            title="Confession — Anna Sobol"
-            allow="autoplay"
-            src="https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fannasobol_bali%2Fconfession&amp;color=%23f4c77b&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=false"
-          ></iframe>
+          <div class="custom-sc-player" data-track="confession">
+            <iframe
+              class="sc-engine"
+              id="sc-confession"
+              title="Confession — Anna Sobol"
+              allow="autoplay"
+              src="https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fannasobol_bali%2Fconfession&amp;color=%23d8bc83&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=false&amp;show_reposts=false&amp;show_teaser=false"
+            ></iframe>
+            <div class="custom-player-top">
+              <button class="custom-play" type="button" aria-label="Воспроизвести Confession"><span>▶</span></button>
+              <div class="custom-player-copy">
+                <small>ANNA SOBOL · BALI</small>
+                <strong>Confession</strong>
+              </div>
+              <a class="custom-sc-link" href="https://soundcloud.com/annasobol_bali/confession" target="_blank" rel="noopener noreferrer">SC ↗</a>
+            </div>
+            <div class="custom-wave" aria-hidden="true"></div>
+            <button class="custom-progress" type="button" aria-label="Перемотать Confession">
+              <span class="custom-progress-fill"></span>
+            </button>
+            <div class="custom-player-time"><span class="current">00:00</span><span class="duration">--:--</span></div>
+          </div>
         </div>
       </article>
       <article class="track-card">
@@ -1549,11 +1896,28 @@
         <h3 class="track-name">Arthouse</h3>
         <p class="track-meta" data-i18n="track_meta_2">Anna Sobol · SoundCloud</p>
         <div class="track-embed">
-          <iframe
-            title="Arthouse — Anna Sobol"
-            allow="autoplay"
-            src="https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fannasobol_bali%2Farthouse&amp;color=%23f4c77b&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=false"
-          ></iframe>
+          <div class="custom-sc-player" data-track="arthouse">
+            <iframe
+              class="sc-engine"
+              id="sc-arthouse"
+              title="Arthouse — Anna Sobol"
+              allow="autoplay"
+              src="https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fannasobol_bali%2Farthouse&amp;color=%23d8bc83&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=false&amp;show_reposts=false&amp;show_teaser=false"
+            ></iframe>
+            <div class="custom-player-top">
+              <button class="custom-play" type="button" aria-label="Воспроизвести Arthouse"><span>▶</span></button>
+              <div class="custom-player-copy">
+                <small>ANNA SOBOL · BALI</small>
+                <strong>Arthouse</strong>
+              </div>
+              <a class="custom-sc-link" href="https://soundcloud.com/annasobol_bali/arthouse" target="_blank" rel="noopener noreferrer">SC ↗</a>
+            </div>
+            <div class="custom-wave" aria-hidden="true"></div>
+            <button class="custom-progress" type="button" aria-label="Перемотать Arthouse">
+              <span class="custom-progress-fill"></span>
+            </button>
+            <div class="custom-player-time"><span class="current">00:00</span><span class="duration">--:--</span></div>
+          </div>
         </div>
       </article>
     </div>
@@ -1690,6 +2054,7 @@
     </div>
   </footer>
 
+  <script src="https://w.soundcloud.com/player/api.js"></script>
   <script>
     (function () {
       var I18N = {
@@ -2014,79 +2379,153 @@
         rev.forEach(function (el) { el.classList.add("visible"); });
       }
 
-      /* Mobile zigzag footsteps, revealed progressively by scroll */
-      var footTrail = document.getElementById("footstep-trail");
-      var footObserver = null;
-      var footResizeTimer = 0;
-
-      function buildFootTrail() {
-        if (!footTrail) return;
-        if (!window.matchMedia("(max-width: 767px)").matches) {
-          footTrail.innerHTML = "";
-          footTrail.style.height = "0px";
-          return;
-        }
-
-        if (footObserver) footObserver.disconnect();
-        footTrail.innerHTML = "";
-
-        var docHeight = Math.max(
-          document.body.scrollHeight,
-          document.documentElement.scrollHeight
-        );
-        footTrail.style.height = docHeight + "px";
-
-        var startY = Math.max(650, Math.round(window.innerHeight * 0.82));
-        var endY = Math.max(startY, docHeight - 300);
-        var stepGap = 185;
-        var xPath = [5, 89, 8, 86];
-        var fragment = document.createDocumentFragment();
-        var steps = [];
-
-        for (var y = startY, i = 0; y < endY; y += stepGap, i++) {
-          var side = i % 2 === 0 ? "left" : "right";
-          var foot = document.createElement("span");
-          foot.className = "scroll-footstep " + side;
-          foot.style.top = y + "px";
-          foot.style.left = xPath[i % xPath.length] + "%";
-          foot.style.setProperty("--step-rotation", (side === "left" ? -20 : 20) + "deg");
-          foot.innerHTML =
-            '<svg viewBox="0 0 28 46" aria-hidden="true">' +
-              '<ellipse cx="13" cy="31" rx="5.1" ry="9.1" fill="currentColor"/>' +
-              '<ellipse cx="13.4" cy="20.5" rx="7.1" ry="10.1" fill="currentColor"/>' +
-              '<circle cx="7.1" cy="9.2" r="2.55" fill="currentColor"/>' +
-              '<circle cx="12" cy="6.2" r="2.7" fill="currentColor"/>' +
-              '<circle cx="17" cy="6.8" r="2.35" fill="currentColor"/>' +
-              '<circle cx="21.1" cy="9.8" r="1.85" fill="currentColor"/>' +
-            '</svg>';
-          fragment.appendChild(foot);
-          steps.push(foot);
-        }
-
-        footTrail.appendChild(fragment);
-
-        if (reduce || !("IntersectionObserver" in window)) {
-          steps.forEach(function (foot) { foot.classList.add("visible"); });
-          return;
-        }
-
-        footObserver = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            if (!entry.isIntersecting) return;
-            entry.target.classList.add("visible");
-            footObserver.unobserve(entry.target);
-          });
-        }, { threshold: 0.01, rootMargin: "0px 0px -14% 0px" });
-
-        steps.forEach(function (foot) { footObserver.observe(foot); });
+      /* Transparent custom SoundCloud players */
+      function formatTrackTime(ms) {
+        var total = Math.max(0, Math.floor((ms || 0) / 1000));
+        var minutes = Math.floor(total / 60);
+        var seconds = total % 60;
+        return minutes + ":" + String(seconds).padStart(2, "0");
       }
 
-      buildFootTrail();
-      window.addEventListener("load", buildFootTrail, { once: true });
-      window.addEventListener("resize", function () {
-        clearTimeout(footResizeTimer);
-        footResizeTimer = setTimeout(buildFootTrail, 180);
-      });
+      function initCustomTrackPlayers() {
+        if (!window.SC || !window.SC.Widget) return;
+        var activeWidgets = [];
+
+        document.querySelectorAll(".custom-sc-player").forEach(function (player, playerIndex) {
+          var iframe = player.querySelector(".sc-engine");
+          var playButton = player.querySelector(".custom-play");
+          var playGlyph = playButton.querySelector("span");
+          var progress = player.querySelector(".custom-progress");
+          var progressFill = player.querySelector(".custom-progress-fill");
+          var currentTime = player.querySelector(".current");
+          var durationTime = player.querySelector(".duration");
+          var wave = player.querySelector(".custom-wave");
+          var widget = window.SC.Widget(iframe);
+          var duration = 0;
+
+          for (var i = 0; i < 44; i++) {
+            var bar = document.createElement("span");
+            var height = 18 + ((i * (playerIndex ? 17 : 23) + 11) % 76);
+            bar.style.setProperty("--wave-height", height + "%");
+            wave.appendChild(bar);
+          }
+
+          activeWidgets.push(widget);
+
+          widget.bind(window.SC.Widget.Events.READY, function () {
+            widget.getDuration(function (value) {
+              duration = value || 0;
+              durationTime.textContent = formatTrackTime(duration);
+            });
+          });
+
+          widget.bind(window.SC.Widget.Events.PLAY, function () {
+            activeWidgets.forEach(function (other) {
+              if (other !== widget) other.pause();
+            });
+            playGlyph.textContent = "Ⅱ";
+            playButton.setAttribute("aria-label", "Поставить трек на паузу");
+            player.classList.add("playing");
+          });
+
+          widget.bind(window.SC.Widget.Events.PAUSE, function () {
+            playGlyph.textContent = "▶";
+            player.classList.remove("playing");
+          });
+
+          widget.bind(window.SC.Widget.Events.FINISH, function () {
+            playGlyph.textContent = "▶";
+            progressFill.style.width = "0%";
+            currentTime.textContent = "0:00";
+            player.classList.remove("playing");
+          });
+
+          widget.bind(window.SC.Widget.Events.PLAY_PROGRESS, function (data) {
+            var position = data.currentPosition || 0;
+            var ratio = duration ? Math.min(1, position / duration) : (data.relativePosition || 0);
+            progressFill.style.width = (ratio * 100) + "%";
+            currentTime.textContent = formatTrackTime(position);
+          });
+
+          playButton.addEventListener("click", function () {
+            widget.isPaused(function (paused) {
+              if (paused) widget.play();
+              else widget.pause();
+            });
+          });
+
+          progress.addEventListener("click", function (event) {
+            if (!duration) return;
+            var rect = progress.getBoundingClientRect();
+            var ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+            widget.seekTo(duration * ratio);
+          });
+        });
+      }
+
+      initCustomTrackPlayers();
+
+      /* Mobile footsteps: toes point down, old prints vanish after a few steps */
+      var footTrail = document.getElementById("footstep-trail");
+      var footQueue = [];
+      var footStepIndex = 0;
+      var lastFootScroll = window.scrollY || 0;
+      var footDistance = 0;
+      var footXPath = [10, 72, 22, 84];
+      var footYPath = [54, 63, 72, 81, 87];
+
+      function fadeFootstep(foot) {
+        if (!foot || foot.classList.contains("fading")) return;
+        foot.classList.add("fading");
+        setTimeout(function () {
+          if (foot.parentNode) foot.parentNode.removeChild(foot);
+          var queueIndex = footQueue.indexOf(foot);
+          if (queueIndex >= 0) footQueue.splice(queueIndex, 1);
+        }, 500);
+      }
+
+      function createDownwardFootstep() {
+        if (!footTrail || reduce || !window.matchMedia("(max-width: 767px)").matches) return;
+
+        var side = footStepIndex % 2 === 0 ? "left" : "right";
+        var foot = document.createElement("span");
+        foot.className = "scroll-footstep " + side;
+        foot.style.left = footXPath[footStepIndex % footXPath.length] + "%";
+        foot.style.top = footYPath[footStepIndex % footYPath.length] + "%";
+        foot.style.setProperty("--step-rotation", (side === "left" ? 166 : 194) + "deg");
+        foot.innerHTML =
+          '<svg viewBox="0 0 28 46" aria-hidden="true">' +
+            '<ellipse cx="13" cy="31" rx="5.1" ry="9.1" fill="currentColor"/>' +
+            '<ellipse cx="13.4" cy="20.5" rx="7.1" ry="10.1" fill="currentColor"/>' +
+            '<circle cx="7.1" cy="9.2" r="2.55" fill="currentColor"/>' +
+            '<circle cx="12" cy="6.2" r="2.7" fill="currentColor"/>' +
+            '<circle cx="17" cy="6.8" r="2.35" fill="currentColor"/>' +
+            '<circle cx="21.1" cy="9.8" r="1.85" fill="currentColor"/>' +
+          '</svg>';
+
+        footTrail.appendChild(foot);
+        footQueue.push(foot);
+        footStepIndex++;
+
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () { foot.classList.add("visible"); });
+        });
+
+        while (footQueue.length > 4) fadeFootstep(footQueue[0]);
+        setTimeout(function () { fadeFootstep(foot); }, 2700);
+      }
+
+      window.addEventListener("scroll", function () {
+        var currentScroll = window.scrollY || 0;
+        var delta = currentScroll - lastFootScroll;
+        lastFootScroll = currentScroll;
+
+        if (delta <= 0) return;
+        footDistance += delta;
+        if (footDistance < 82) return;
+        footDistance = 0;
+        createDownwardFootstep();
+      }, { passive: true });
 
       /* Stats countUp */
       var statsDone = false;
