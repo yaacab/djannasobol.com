@@ -533,24 +533,36 @@
       position: relative;
       z-index: 2;
     }
-    .marquee-row { overflow: hidden; white-space: nowrap; }
+    .marquee-row {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+      mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+    }
     .marquee-inner {
-      display: inline-block;
+      display: flex;
+      width: max-content;
+      will-change: transform;
       font-family: "Cormorant Garamond", serif;
       font-style: italic;
       font-size: 1.8rem;
       color: rgba(232, 213, 176, 0.12);
     }
+    .marquee-inner > span {
+      flex: 0 0 auto;
+      display: block;
+    }
     .marquee-inner .sep { color: rgba(200, 169, 110, 0.3); }
-    .marquee-inner.r1 { animation: mar1 30s linear infinite; }
-    .marquee-inner.r2 { animation: mar2 24s linear infinite; }
+    .marquee-inner.r1 { animation: mar1 34s linear infinite; }
+    .marquee-inner.r2 { animation: mar2 29s linear infinite; }
     @keyframes mar1 {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(-12.5%, 0, 0); }
     }
     @keyframes mar2 {
-      0% { transform: translateX(-50%); }
-      100% { transform: translateX(0); }
+      from { transform: translate3d(-12.5%, 0, 0); }
+      to { transform: translate3d(0, 0, 0); }
     }
     /* Wave divider */
     .wave-divider {
@@ -603,20 +615,60 @@
       max-width: 900px;
       margin: 0 auto 2.5rem;
     }
-    .sc-box {
+    .mixes-signature {
+      position: relative;
       max-width: 900px;
       margin: 0 auto 2.5rem;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(200, 169, 110, 0.2);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(200, 169, 110, 0.1);
-      border-radius: 4px;
+      padding: clamp(2.2rem, 5vw, 4rem) 1.5rem;
+      text-align: center;
       overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 110%, rgba(244, 199, 123, 0.18), transparent 48%),
+        linear-gradient(135deg, rgba(17, 83, 76, 0.78), rgba(5, 28, 38, 0.92));
+      border: 1px solid rgba(244, 199, 123, 0.32);
+      box-shadow: 0 24px 70px rgba(0, 10, 18, 0.28);
     }
-    .sc-box iframe {
-      display: block;
-      width: 100%;
-      height: 300px;
-      border: 0;
+    .mixes-signature::before,
+    .mixes-signature::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: min(18vw, 170px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+      opacity: 0.6;
+    }
+    .mixes-signature::before { left: 1.5rem; }
+    .mixes-signature::after {
+      right: 1.5rem;
+      transform: rotate(180deg);
+    }
+    .mixes-kicker {
+      margin: 0 0 0.65rem;
+      font-family: "Jost", sans-serif;
+      font-size: 0.62rem;
+      font-weight: 400;
+      letter-spacing: 0.52em;
+      text-transform: uppercase;
+      color: var(--mist);
+    }
+    .mixes-name {
+      margin: 0;
+      font-family: "Bodoni Moda", serif;
+      font-size: clamp(2.4rem, 6vw, 5.3rem);
+      font-weight: 400;
+      line-height: 0.95;
+      letter-spacing: 0.04em;
+      color: var(--cream);
+      text-shadow: 0 0 38px rgba(244, 199, 123, 0.16);
+    }
+    .mixes-sub {
+      margin: 1rem 0 0;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1rem, 2.3vw, 1.35rem);
+      font-style: italic;
+      letter-spacing: 0.08em;
+      color: var(--gold);
     }
     .track-grid { display: grid; gap: 1.5rem; max-width: 900px; margin: 0 auto; }
     @media (min-width: 768px) {
@@ -718,15 +770,34 @@
       position: relative;
       z-index: 2;
     }
+    .video-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+    @media (min-width: 900px) {
+      .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .video-card { min-width: 0; }
     .video-box {
       position: relative;
-      max-width: 880px;
-      margin: 0 auto;
+      width: 100%;
+      margin: 0;
       border: 1px solid rgba(200, 169, 110, 0.2);
-      box-shadow: 0 0 0 1px rgba(200, 169, 110, 0.08), 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 40px var(--glow-green);
+      box-shadow: 0 0 0 1px rgba(200, 169, 110, 0.08), 0 24px 80px rgba(0, 0, 0, 0.48), 0 0 40px var(--glow-green);
       border-radius: 2px;
       overflow: hidden;
       aspect-ratio: 16 / 9;
+    }
+    .video-name {
+      margin: 1rem 0 0;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.35rem;
+      font-weight: 500;
+      color: var(--cream);
+      text-align: center;
     }
     .video-box::before, .video-box::after {
       content: "";
@@ -1228,6 +1299,8 @@
       background: radial-gradient(ellipse 80% 65% at 50% 35%, #115b51 0%, #061821 72%);
     }
     footer { background: #041219; }
+    #cursor-dot,
+    #cursor-ring { display: none !important; }
   </style>
 </head>
 <body>
@@ -1365,14 +1438,26 @@
   <div class="marquee-wrap">
     <div class="marquee-row">
       <div class="marquee-inner r1">
-        <span>ANNA SOBOL <span class="sep">·</span> DEEP HOUSE <span class="sep">·</span> BALI <span class="sep">·</span> ORGANIC TECHNO <span class="sep">·</span> </span>
-        <span>ANNA SOBOL <span class="sep">·</span> DEEP HOUSE <span class="sep">·</span> BALI <span class="sep">·</span> ORGANIC TECHNO <span class="sep">·</span> </span>
+        <span>ANNA SOBOL <span class="sep">·</span> DEEP HOUSE <span class="sep">·</span> BALI <span class="sep">·</span> ORGANIC TECHNO <span class="sep">·</span>&nbsp;</span>
+        <span>ANNA SOBOL <span class="sep">·</span> DEEP HOUSE <span class="sep">·</span> BALI <span class="sep">·</span> ORGANIC TECHNO <span class="sep">·</span>&nbsp;</span>
+        <span>ANNA SOBOL <span class="sep">·</span> DEEP HOUSE <span class="sep">·</span> BALI <span class="sep">·</span> ORGANIC TECHNO <span class="sep">·</span>&nbsp;</span>
+        <span>ANNA SOBOL <span class="sep">·</span> DEEP HOUSE <span class="sep">·</span> BALI <span class="sep">·</span> ORGANIC TECHNO <span class="sep">·</span>&nbsp;</span>
+        <span>ANNA SOBOL <span class="sep">·</span> DEEP HOUSE <span class="sep">·</span> BALI <span class="sep">·</span> ORGANIC TECHNO <span class="sep">·</span>&nbsp;</span>
+        <span>ANNA SOBOL <span class="sep">·</span> DEEP HOUSE <span class="sep">·</span> BALI <span class="sep">·</span> ORGANIC TECHNO <span class="sep">·</span>&nbsp;</span>
+        <span>ANNA SOBOL <span class="sep">·</span> DEEP HOUSE <span class="sep">·</span> BALI <span class="sep">·</span> ORGANIC TECHNO <span class="sep">·</span>&nbsp;</span>
+        <span>ANNA SOBOL <span class="sep">·</span> DEEP HOUSE <span class="sep">·</span> BALI <span class="sep">·</span> ORGANIC TECHNO <span class="sep">·</span>&nbsp;</span>
       </div>
     </div>
     <div class="marquee-row">
       <div class="marquee-inner r2">
-        <span>MOSCOW <span class="sep">·</span> MELODIC <span class="sep">·</span> DJ <span class="sep">·</span> PRODUCER <span class="sep">·</span> OCEAN SOUND <span class="sep">·</span> </span>
-        <span>MOSCOW <span class="sep">·</span> MELODIC <span class="sep">·</span> DJ <span class="sep">·</span> PRODUCER <span class="sep">·</span> OCEAN SOUND <span class="sep">·</span> </span>
+        <span>MOSCOW <span class="sep">·</span> MELODIC <span class="sep">·</span> DJ <span class="sep">·</span> PRODUCER <span class="sep">·</span> OCEAN SOUND <span class="sep">·</span>&nbsp;</span>
+        <span>MOSCOW <span class="sep">·</span> MELODIC <span class="sep">·</span> DJ <span class="sep">·</span> PRODUCER <span class="sep">·</span> OCEAN SOUND <span class="sep">·</span>&nbsp;</span>
+        <span>MOSCOW <span class="sep">·</span> MELODIC <span class="sep">·</span> DJ <span class="sep">·</span> PRODUCER <span class="sep">·</span> OCEAN SOUND <span class="sep">·</span>&nbsp;</span>
+        <span>MOSCOW <span class="sep">·</span> MELODIC <span class="sep">·</span> DJ <span class="sep">·</span> PRODUCER <span class="sep">·</span> OCEAN SOUND <span class="sep">·</span>&nbsp;</span>
+        <span>MOSCOW <span class="sep">·</span> MELODIC <span class="sep">·</span> DJ <span class="sep">·</span> PRODUCER <span class="sep">·</span> OCEAN SOUND <span class="sep">·</span>&nbsp;</span>
+        <span>MOSCOW <span class="sep">·</span> MELODIC <span class="sep">·</span> DJ <span class="sep">·</span> PRODUCER <span class="sep">·</span> OCEAN SOUND <span class="sep">·</span>&nbsp;</span>
+        <span>MOSCOW <span class="sep">·</span> MELODIC <span class="sep">·</span> DJ <span class="sep">·</span> PRODUCER <span class="sep">·</span> OCEAN SOUND <span class="sep">·</span>&nbsp;</span>
+        <span>MOSCOW <span class="sep">·</span> MELODIC <span class="sep">·</span> DJ <span class="sep">·</span> PRODUCER <span class="sep">·</span> OCEAN SOUND <span class="sep">·</span>&nbsp;</span>
       </div>
     </div>
   </div>
@@ -1390,13 +1475,10 @@
     <p class="sec-tag reveal" data-i18n="player_tag">слушать</p>
     <h2 class="sec-title-lg reveal" data-i18n="player_title">Миксы</h2>
     <div class="sec-rule reveal"></div>
-    <div class="sc-box reveal">
-      <iframe
-        title="Anna Sobol — SoundCloud"
-        data-i18n-title="player_iframe_title"
-        allow="autoplay"
-        src="https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fannasobol_bali&amp;color=%23f4c77b&amp;auto_play=false&amp;hide_related=false&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;show_teaser=false&amp;visual=true"
-      ></iframe>
+    <div class="mixes-signature reveal">
+      <p class="mixes-kicker" data-i18n="mixes_kicker">selected sound · bali</p>
+      <p class="mixes-name">BALI FREQUENCIES</p>
+      <p class="mixes-sub" data-i18n="mixes_sub">музыка между океаном и ночью</p>
     </div>
     <div class="track-grid reveal-stagger">
       <article class="track-card">
@@ -1437,15 +1519,33 @@
     <p class="sec-tag reveal" data-i18n="video_tag">в эфире</p>
     <h2 class="sec-title-lg reveal" data-i18n="video_title">Видео</h2>
     <div class="sec-rule reveal"></div>
-    <div class="video-box reveal">
-      <iframe
-        src="https://www.youtube.com/embed/fgYGWuJVXew?rel=0"
-        data-i18n-title="video_iframe_title"
-        title="Anna Sobol — Around the World (Afro House)"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allowfullscreen
-      ></iframe>
+    <div class="video-grid reveal-stagger">
+      <article class="video-card">
+        <div class="video-box">
+          <iframe
+            src="https://www.youtube.com/embed/fgYGWuJVXew?rel=0"
+            title="Anna Sobol — Around the World (Afro House)"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <h3 class="video-name">Around the World · Afro House</h3>
+      </article>
+      <article class="video-card">
+        <div class="video-box">
+          <iframe
+            src="https://www.youtube.com/embed/mur4S84ugkc?rel=0"
+            title="Anna Sobol — Tomorrow (Breaks / Breakbeat) · Nusa Penida XPark"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <h3 class="video-name">Tomorrow · Nusa Penida XPark</h3>
+      </article>
     </div>
     <div style="text-align:center;">
       <a class="video-cta reveal" href="https://youtube.com/@djannasobol" target="_blank" rel="noopener noreferrer" data-i18n="video_cta">смотреть канал на youtube →</a>
@@ -1560,6 +1660,8 @@
         player_tag: { ru: "слушать", en: "listen" },
         player_title: { ru: "Миксы", en: "Mixes" },
         player_iframe_title: { ru: "Anna Sobol — SoundCloud", en: "Anna Sobol — SoundCloud" },
+        mixes_kicker: { ru: "избранный звук · бали", en: "selected sound · bali" },
+        mixes_sub: { ru: "музыка между океаном и ночью", en: "music between the ocean and the night" },
         video_iframe_title: { ru: "Anna Sobol — Around the World (Afro House)", en: "Anna Sobol — Around the World (Afro House)" },
         track_meta_1: { ru: "Anna Sobol · SoundCloud", en: "Anna Sobol · SoundCloud" },
         track_meta_2: { ru: "Anna Sobol · SoundCloud", en: "Anna Sobol · SoundCloud" },
@@ -1695,32 +1797,9 @@
       window.addEventListener("scroll", onScroll, { passive: true });
       onScroll();
 
-      /* Cursor */
+      /* Native cursor: avoids GPU compositing artifacts over the transparent emblem */
       var body = document.body;
-      var dot = document.getElementById("cursor-dot");
-      var ring = document.getElementById("cursor-ring");
-      var mx = 0, my = 0, rx = 0, ry = 0;
-      if (window.matchMedia("(min-width: 1024px)").matches && !reduce) {
-        body.classList.add("cursor-on");
-        document.addEventListener("mousemove", function (e) {
-          mx = e.clientX;
-          my = e.clientY;
-          dot.style.left = mx + "px";
-          dot.style.top = my + "px";
-        });
-        function loop() {
-          rx += (mx - rx) * 0.11;
-          ry += (my - ry) * 0.11;
-          ring.style.left = rx + "px";
-          ring.style.top = ry + "px";
-          requestAnimationFrame(loop);
-        }
-        loop();
-        document.querySelectorAll("a, button").forEach(function (el) {
-          el.addEventListener("mouseenter", function () { body.classList.add("cursor-hover"); });
-          el.addEventListener("mouseleave", function () { body.classList.remove("cursor-hover"); });
-        });
-      }
+      body.classList.remove("cursor-on", "cursor-hover");
 
       /* Particles */
       var pc = document.getElementById("particle-canvas");
@@ -1749,11 +1828,7 @@
             gold: gold
           });
         }
-        document.querySelector(".hero").addEventListener("mousemove", function (e) {
-          var rect = pc.getBoundingClientRect();
-          mouse.x = e.clientX - rect.left;
-          mouse.y = e.clientY - rect.top;
-        }, { passive: true });
+        /* Particles stay ambient and no longer trigger repaints on mouse movement. */
         function stepP() {
           ctx.clearRect(0, 0, pw, ph);
           for (var i = 0; i < parts.length; i++) {
@@ -1825,7 +1900,7 @@
           var w = rect.width, h = 80;
           eqx.clearRect(0, 0, w, h);
           var gap = 2;
-          var slot = (w - gap * (nb + 1)) / nb;
+          var slot = (w - gap * (nb - 1)) / nb;
           var barW = slot * 0.55;
           var off = (slot - barW) / 2;
           for (var i = 0; i < nb; i++) {
@@ -1833,7 +1908,7 @@
             var a = amp[i] + (i < 10 ? 0.3 : 0);
             var v = a * (0.5 + 0.5 * Math.sin(t * fr[i] + pha[i]));
             var bh = Math.min(h * 0.55, v * h * 0.52);
-            var x = gap + i * slot + off;
+            var x = i * (slot + gap) + off;
             var y = h - bh;
             drawBar(x, y, barW, bh, bh > h * 0.65);
           }
