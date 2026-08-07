@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" id="html-root">
+<html lang="en" id="html-root">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -257,6 +257,31 @@
       background: radial-gradient(ellipse 120% 80% at 50% 60%, var(--jungle) 0%, var(--night) 50%, var(--ocean) 100%);
       overflow: hidden;
       z-index: 2;
+    }
+    .hero-bg-video {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center;
+      opacity: 0.34;
+      filter: saturate(0.82) contrast(1.08) brightness(0.62);
+      pointer-events: none;
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+    }
+    @media (max-width: 767px) {
+      .hero-bg-video {
+        opacity: 0.29;
+        object-position: center 42%;
+        filter: saturate(0.8) contrast(1.08) brightness(0.58);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-bg-video { display: none; }
     }
     .hero .orb-l {
       position: absolute;
@@ -1941,8 +1966,8 @@
     <a class="nav-logo" href="#top">Anna Sobol</a>
     <div class="nav-cluster">
       <div class="lang-switch" role="group" aria-label="Language">
-        <button type="button" class="lang-btn lang-pick active" data-lang="ru" aria-pressed="true">RU</button>
-        <button type="button" class="lang-btn lang-pick" data-lang="en" aria-pressed="false">EN</button>
+        <button type="button" class="lang-btn lang-pick" data-lang="ru" aria-pressed="false">RU</button>
+        <button type="button" class="lang-btn lang-pick active" data-lang="en" aria-pressed="true">EN</button>
       </div>
       <nav class="nav-links">
         <a href="#player" data-i18n="nav_listen">слушать</a>
@@ -1956,8 +1981,8 @@
   <div class="nav-overlay" id="nav-overlay">
     <div class="overlay-lang">
       <div class="lang-switch" role="group" aria-label="Language">
-        <button type="button" class="lang-btn lang-pick active" data-lang="ru" aria-pressed="true">RU</button>
-        <button type="button" class="lang-btn lang-pick" data-lang="en" aria-pressed="false">EN</button>
+        <button type="button" class="lang-btn lang-pick" data-lang="ru" aria-pressed="false">RU</button>
+        <button type="button" class="lang-btn lang-pick active" data-lang="en" aria-pressed="true">EN</button>
       </div>
     </div>
     <a href="#player" data-i18n="nav_listen">слушать</a>
@@ -1967,6 +1992,22 @@
   </div>
 
   <section class="hero" id="top">
+    <video
+      class="hero-bg-video"
+      id="hero-bg-video"
+      muted
+      loop
+      autoplay
+      playsinline
+      webkit-playsinline
+      preload="metadata"
+      poster="assets/hero-bali-poster.webp"
+      aria-hidden="true"
+      tabindex="-1"
+    >
+      <source src="assets/hero-bali-mobile.mp4" type="video/mp4" media="(max-width: 767px)" />
+      <source src="assets/hero-bali-desktop.mp4" type="video/mp4" />
+    </video>
     <div class="orb-l" aria-hidden="true"></div>
     <div class="orb-r" aria-hidden="true"></div>
     <div class="horizon-glow" aria-hidden="true"></div>
@@ -2367,7 +2408,7 @@
         if (brg) brg.setAttribute("aria-expanded", "false");
       }
 
-      var savedLang = "ru";
+      var savedLang = "en";
       try {
         var s = localStorage.getItem("djanna-lang");
         if (s === "en" || s === "ru") savedLang = s;
@@ -2387,6 +2428,17 @@
 
       var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       var mobile = window.matchMedia("(max-width: 767px)").matches;
+      var heroBgVideo = document.getElementById("hero-bg-video");
+      var saveData = !!(navigator.connection && navigator.connection.saveData);
+      if (heroBgVideo) {
+        if (reduce || saveData) {
+          heroBgVideo.pause();
+          heroBgVideo.removeAttribute("autoplay");
+        } else {
+          var heroPlay = heroBgVideo.play();
+          if (heroPlay && typeof heroPlay.catch === "function") heroPlay.catch(function () {});
+        }
+      }
       var nParticles = mobile ? 40 : 80;
       var nBars = mobile ? 40 : 70;
 
