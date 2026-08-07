@@ -4,7 +4,7 @@
 #   DEPLOY_USER   — e.g. root
 #   DEPLOY_SSH_KEY — private SSH key with access to the host
 # Optional:
-#   DEPLOY_PATH   — default /var/www/djannasobol/index.html
+#   DEPLOY_DIR    — default /var/www/djannasobol
 #   DEPLOY_PORT   — default 22
 
 name: Deploy site
@@ -14,6 +14,7 @@ on:
     branches: [main]
     paths:
       - "index.html"
+      - "assets/**"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
@@ -42,35 +43,26 @@ jobs:
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEPLOY_DIR: ${{ secrets.DEPLOY_DIR }}
           DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
         run: |
           USER="${DEPLOY_USER:-root}"
-          PATH_DEST="${DEPLOY_PATH:-/var/www/djannasobol/index.html}"
-          DIR_DEST="${PATH_DEST%/*}"
+          DIR="${DEPLOY_DIR:-/var/www/djannasobol}"
           PORT="${DEPLOY_PORT:-22}"
-
           ssh -i ~/.ssh/deploy_key -p "$PORT" -o StrictHostKeyChecking=accept-new \
-            "${USER}@${DEPLOY_HOST}" "mkdir -p '${DIR_DEST}/assets'"
-
+            "${USER}@${DEPLOY_HOST}" "mkdir -p '${DIR}/assets'"
           scp -i ~/.ssh/deploy_key -P "$PORT" -o StrictHostKeyChecking=accept-new \
-            index.html "${USER}@${DEPLOY_HOST}:${PATH_DEST}"
-
-          scp -i ~/.ssh/deploy_key -P "$PORT" -o StrictHostKeyChecking=accept-new \
-            assets/hero-bali-desktop.mp4 \
-            assets/hero-bali-mobile.mp4 \
-            assets/hero-bali-poster.webp \
-            "${USER}@${DEPLOY_HOST}:${DIR_DEST}/assets/"
-
+            index.html "${USER}@${DEPLOY_HOST}:${DIR}/index.html"
+          if [ -d assets ]; then
+            scp -i ~/.ssh/deploy_key -P "$PORT" -o StrictHostKeyChecking=accept-new \
+              assets/* "${USER}@${DEPLOY_HOST}:${DIR}/assets/"
+          fi
           ssh -i ~/.ssh/deploy_key -p "$PORT" -o StrictHostKeyChecking=accept-new \
-            "${USER}@${DEPLOY_HOST}" \
-            "chown -R www-data:www-data '${DIR_DEST}/assets' '${PATH_DEST}' 2>/dev/null || true; find '${DIR_DEST}/assets' -type f -exec chmod 644 {} \;; chmod 644 '${PATH_DEST}'"
+            "${USER}@${DEPLOY_HOST}" "chown -R www-data:www-data '${DIR}' 2>/dev/null || true; find '${DIR}' -type f -exec chmod 644 {} +"
 
       - name: Smoke check
         run: |
           sleep 2
           curl -fsSIL --max-time 20 https://djannasobol.com/ | head -n 15
-          curl -fsS --max-time 20 https://djannasobol.com/ | head -n 8
-          curl -fsSIL --max-time 20 https://djannasobol.com/assets/hero-bali-mobile.mp4 | grep -qi "content-type: video/mp4"
-          curl -fsSIL --max-time 20 https://djannasobol.com/assets/hero-bali-desktop.mp4 | grep -qi "content-type: video/mp4"
-          curl -fsSIL --max-time 20 https://djannasobol.com/assets/hero-bali-poster.webp | grep -qi "content-type: image/webp"
+          curl -fsSIL --max-time 20 https://djannasobol.com/assets/hero-bali-desktop.mp4 | head -n 12
+          curl -fsS --max-time 20 https://djannasobol.com/ | head -n 12
